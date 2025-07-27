@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ subject }} - {{ chapter }} - {{ topic }} - Topics</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            display: flex;
+            padding: 20px;
+        }
+        .sidebar {
+            width: 200px;
+            padding: 10px;
+            background-color: #f4f4f4;
+            border-right: 1px solid #ccc;
+        }
+        .sidebar h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        .sidebar a {
+            display: block;
+            color: #007BFF;
+            text-decoration: none;
+            margin: 5px 0;
+            padding: 5px;
+        }
+        .sidebar a:hover {
+            background-color: #e8f4ff;
+        }
+        .content {
+            margin-left: 20px;
+            width: 100%;
+        }
+        .content h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .content h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        #content-display {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #ffffff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .error-message {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>Options</h2>
+            <a href="#" onclick="loadContent('Notes')">Notes</a>
+            <a href="#" onclick="loadContent('MCQs')">MCQs</a>
+            <a href="#" onclick="loadContent('Descriptive Questions')">Descriptive Questions</a>
+            <a href="#" onclick="loadContent('Videos')">Videos</a>
+        </div>
+        <div class="content">
+            <h1>{{ subject }} - {{ chapter }} - {{ topic }}</h1>
+            <h3>Content</h3>
+            <div id="content-display">Loading content...</div>
+            <div>{{videos_path}}</div>
+        </div>
+    </div>
+
+    <script>
+        function loadContent(contentType) {
+            const subject = "{{ subject }}";
+            const chapter = "{{ chapter }}";
+            const topic = "{{ topic }}";
+            const contentDisplay = document.getElementById('content-display');
+            contentDisplay.innerHTML = `Loading ${contentType}...`;
+
+            fetch('load_content', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                url:`topic/${subject}/${chapter}/${topic}`
+                
+            })
+            .then(response => response.json())
+            .then(data => {
+                contentDisplay.innerHTML = ''; // Clear previous content
+
+                if (data.error) {
+                    contentDisplay.innerHTML = `<span class="error-message">${data.error}</span>`;
+                    return;
+                }
+
+                // Display Notes (PDF)
+                if (contentType === 'Notes' && data.content.notes) {
+                    const pdfEmbed = document.createElement('embed');
+                    pdfEmbed.src = data.content.notes;
+                    pdfEmbed.type = 'application/pdf';
+                    pdfEmbed.width = '100%';
+                    pdfEmbed.height = '600px';
+                    contentDisplay.appendChild(pdfEmbed);
+                }
+
+                // Display MCQs
+                if (contentType === 'MCQs' && data.content.mcqs) {
+                    const mcqsContainer = document.createElement('div');
+                    mcqsContainer.innerHTML = `<h3>MCQs</h3>`;
+                    data.content.mcqs.forEach((mcq, index) => {
+                        const mcqElement = document.createElement('p');
+                        mcqElement.textContent = `${index + 1}. ${mcq['Question'] || "No question available"}`;
+                        mcqsContainer.appendChild(mcqElement);
+                    });
+                    contentDisplay.appendChild(mcqsContainer);
+                }
+
+                // Display Descriptive Questions
+                if (contentType === 'Descriptive Questions' && data.content.descriptive_questions) {
+                    const descContainer = document.createElement('div');
+                    descContainer.innerHTML = `<h3>Descriptive Questions</h3>`;
+                    data.content.descriptive_questions.forEach((question, index) => {
+                        const questionElement = document.createElement('p');
+                        questionElement.textContent = `${index + 1}. ${question['Question'] || "No question available"}`;
+                        descContainer.appendChild(questionElement);
+                    });
+                    contentDisplay.appendChild(descContainer);
+                }
+
+                // Display Video
+                if (contentType === 'Videos' && data.content.video) {
+                    const videoEmbed = document.createElement('video');
+                    videoEmbed.src = data.content.video;
+                    videoEmbed.controls = true;
+                    videoEmbed.width = '600';
+                    contentDisplay.appendChild(videoEmbed);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading content:', error);
+                contentDisplay.innerHTML = `<span class="error-message">Failed to load ${contentType.toLowerCase()}. Please try again.</span>`;
+            });
+        }
+
+        // Load Notes by default on page load
+        window.onload = function() {
+            loadContent('Notes');
+        };
+    </script>
+</body>
+</html>

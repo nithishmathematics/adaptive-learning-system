@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Status</title>
+    <style>
+        .graph-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: 20px;
+        }
+        .graph {
+            width: 45%;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">Learning Status</h1>
+    <div class="graph-container">
+        <div class="graph">
+            <h2>Overall Performance rate of the subjects</h2>
+            <img src="{{ graphs['lr'] }}" alt="Overall Performance rate of the subjects">
+        </div>
+        <div class="graph">
+            <h2>Prediction of correct answers of Next 10 questions</h2>
+            <img src="{{ graphs['rnn'] }}" alt="Prediction of correct answers of Next 10 questions">
+        </div>
+        <div class="graph">
+            <h2>Average Difficulty Level of the subject</h2>
+            <img src="{{ graphs['difficulty'] }}" alt="Average Difficulty Level">
+        </div>
+        <div class="graph">
+            <h2>Total Time Spent</h2>
+            <img src="{{ graphs['time'] }}" alt="Total Time Spent">
+        </div>
+    </div>
+</body>
+</html>

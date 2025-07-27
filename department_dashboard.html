@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Department Dashboard</title>
+</head>
+<body>
+    <h2>Welcome to the Department Dashboard</h2>
+    <h3>Manage Students and Assign Quizzes</h3>
+
+    <!-- Section for viewing students' details -->
+    <h4>Student List</h4>
+    <table border="1">
+        <tr>
+            <th>Student Name</th>
+            <th>Roll Number</th>
+            <th>Learning Status</th>
+            <th>Quiz Results</th>
+        </tr>
+        <!-- Example of how student data might be displayed -->
+        <tr>
+            <td>John Doe</td>
+            <td>101</td>
+            <td>In Progress</td>
+            <td>85%</td>
+        </tr>
+        <tr>
+            <td>Jane Smith</td>
+            <td>102</td>
+            <td>Completed</td>
+            <td>90%</td>
+        </tr>
+        <!-- Add more rows for more students dynamically -->
+    </table>
+
+    <!-- Section for assigning quizzes -->
+    <h4>Assign Quiz to Students</h4>
+    <form method="POST" action="/assign_quiz">
+        <label>Student:</label>
+        <select name="student">
+            <option value="John Doe">John Doe</option>
+            <option value="Jane Smith">Jane Smith</option>
+            <!-- Add more options dynamically -->
+        </select><br>
+
+        <label>Quiz Title:</label>
+        <input type="text" name="quiz_title" required><br>
+
+        <label>Quiz Description:</label>
+        <textarea name="quiz_description" required></textarea><br>
+
+        <label>Due Date:</label>
+        <input type="date" name="due_date" required><br>
+
+        <button type="submit">Assign Quiz</button>
+    </form>
+
+    <!-- Option to go back to institution dashboard or log out -->
+    <a href="/institution_dashboard">Back to Institution Dashboard</a>
+    <a href="/logout">Logout</a>
+</body>
+</html>

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            height: 100vh;
+        }
+    
+        .dashboard {
+        display: flex;
+        height: 100%;
+    }
+
+    .sidebar {
+        width: 200px;
+        background-color: #2c3e50;
+        color: white;
+        padding: 20px;
+        flex-shrink: 0;
+    }
+
+    .logo {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .logo img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+    }
+
+    .student-info p {
+        margin-top: 0;
+        color: #ffffff;
+        font-size: 14px;
+    }
+
+    .menu {
+        list-style: none;
+        padding: 0;
+    }
+
+    .menu li {
+        padding: 10px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .menu li a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .menu li:hover {
+        background-color: #34495e;
+        border-radius: 5px;
+    }
+
+    .main-content {
+        flex: 1;
+        padding: 20px;
+        background-color: #ecf0f1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    header h1 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #2c3e50;
+    }
+
+    .learning-modules {
+        display: flex;
+        justify-content: space-around;
+        margin: 20px 0;
+        flex-wrap: wrap;
+        width: 80%;
+        gap: 20px;
+    }
+
+    .module {
+        background-color: white;
+        padding: 25px;
+        width: 200px;
+        text-align: center;
+        border-radius: 10px;
+        margin: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: transform 0.3s;
+    }
+
+    .module:hover {
+        transform: translateY(-5px);
+    }
+     
+    .module label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #2c3e50;
+    }
+
+    .module select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #bdc3c7;
+        border-radius: 5px;
+        margin-top: 5px;
+    }
+
+    .topic-select {
+        margin-top: 10px;
+    }
+
+    .progress {
+        width: 200px;
+        padding: 20px;
+        background-color: #ffffff;
+        flex-shrink: 0;
+        box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    }
+
+    .progress-bar {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .progress-bar .circle {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 5px solid #3498db;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #3498db;
+        margin: 0 auto 10px auto;
+        background-color: #ffffff;
+        transition: transform 0.3s;
+    }
+
+    .progress-bar .circle:hover {
+        transform: scale(1.05);
+    }
+
+    .progress-bar p {
+        margin: 0;
+        font-weight: bold;
+        color: #2c3e50;
+    }
+
+    select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3c svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 8px center;
+        background-size: 1em;
+        padding-right: 30px;
+    }
+
+    * {
+        transition: all 0.3s ease-in-out;
+    }
+    
+    .ok-button {
+        margin-top: 10px;
+        padding: 10px 20px;
+        background-color: #3498db;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    .ok-button:hover {
+        background-color: #2980b9;
+    }
+    .subject-image {
+width: 50px; /* Adjust size as needed */
+height: auto; /* Maintain aspect ratio */
+margin-bottom: 5px; /* Space between image and label */
+    }
+</style>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <div class="logo">
+                <img src="https://static.vecteezy.com/system/resources/previews/008/154/360/non_2x/student-logo-vector.jpg" alt="Student Logo">
+            </div>
+            <div class="student-info">
+                <p>{{ session['username'] }}</p>
+            </div>
+            <ul class="menu">
+                <li><a href="#" onclick="openChangePassword()">Change Password</a></li>
+                <li><a href="{{ url_for('student_routes.check_ability') }}">Start learning</a></li>
+                <li><a href="{{ url_for('student_routes.entrance_exam') }}">Entrance Exam</a></li>
+                <li><a href="{{ url_for('student_routes.learning_status') }}">Learning Status</a></li>
+
+                <li><a href="{{ url_for('logout') }}">Log Out</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <header>
+                <h1>Take test</h1>
+            </header>
+            <div class="learning-modules">
+                {% for subject, chapters in subject_chapters.items() %}
+                    <div class="module">
+                        <!-- Add Image for Each Subject -->
+                        <img src="{% if subject == 'Physics' %}https://t3.ftcdn.net/jpg/04/11/66/58/360_F_411665826_NiC2HAz25yNOzXPseWn1UK1YlepQy2dB.jpg
+                        {% elif subject == 'Chemistry' %}https://images.alphacoders.com/109/thumb-1920-1093551.jpg
+                        {% elif subject == 'Mathematics' %}https://wallup.net/wp-content/uploads/2016/07/21/321029-monochrome-Blackboard-knowledge-mathematics-graph-numbers-science-equation-formula-simple_background.jpg
+                        {% elif subject == 'Biology' %}https://cdn.sanity.io/images/0vv8moc6/pharmtech/aa51ed965b82ab9a39a458d8c801f7098d8281d5-1280x720.jpg
+                        {% endif %}" alt="{{ subject }} Image" class="subject-image">
+                        
+                        <label>{{ subject }}</label>
+                        <select id="chapter-{{ subject }}" onchange="loadTopics('{{ subject }}', this.value)">
+                            <option>Select Chapter</option>
+                            {% for chapter in chapters %}
+                                <option>{{ chapter }}</option>
+                            {% endfor %}
+                        </select>
+                        <div id="topics-{{ subject }}" class="topic-select">
+                            <label>Select Topic:</label>
+                            <select id="topic-{{ subject }}"></select>
+                            <button class="ok-button" onclick="redirectToTopic('{{ subject }}')">OK</button>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+    </div>
+
+    <script>
+        function loadTopics(subject, chapter) {
+            $.ajax({
+                url: 'get_topics',
+                type: 'POST',
+                data: { 
+                    subject: subject, 
+                    chapter: chapter 
+                },
+                success: function(data) {
+                    const topicSelect = $(`#topic-${subject}`);
+                    topicSelect.empty();
+                    if (data.topics && data.topics.length > 0) {
+                        $(`#topics-${subject}`).show();
+                        data.topics.forEach(topic => {
+                            topicSelect.append(`<option>${topic}</option>`);
+                        });
+                    } else {
+                        $(`#topics-${subject}`).hide();
+                    }
+                }
+            });
+        }
+
+        function redirectToTopic(subject) {
+    const chapter = $(`#chapter-${subject}`).val();
+    const topic = $(`#topic-${subject}`).val();
+    if (topic) {
+        window.location.href = `quiz/${subject}/${chapter}/${topic}`;  // Change here
+    } else {
+        alert("Please select a topic.");
+    }
+}
+
+        function openChangePassword() {
+            window.location.href = "{{ url_for('student_routes.change_password') }}";
+        }
+    </script>
+</body>
+</html>

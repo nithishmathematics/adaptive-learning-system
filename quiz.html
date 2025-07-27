@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz on {{ topic }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        #quiz-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .flash-message {
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .flash-message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .flash-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .question {
+            display: none; /* Hide all questions by default */
+            margin-bottom: 20px;
+        }
+        .active {
+            display: block; /* Show the active question */
+        }
+        .question-text {
+            font-size: 24px; /* Increased font size for the question text */
+            color: #333; /* Darker color for better readability */
+            margin-bottom: 10px; /* Space below the question */
+        }
+        .options {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .option {
+            flex: 1; /* Make options take equal space */
+            margin-right: 10px; /* Space between options */
+        }
+        .option:last-child {
+            margin-right: 0; /* Remove right margin from last option */
+        }
+        .option label {
+            font-size: 20px; /* Increased font size for option labels */
+            color: #555; /* Slightly lighter color for options */
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px; /* Increased font size for button */
+        }
+        button:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+        .timer {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px; /* Timer font size */
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-container">
+        <h1>Quiz on {{ topic }}</h1>
+
+        <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              <div>
+                  {% for category, message in messages %}
+                      <div class="flash-message {{ category }}">{{ message }}</div>
+                  {% endfor %}
+              </div>
+          {% endif %}
+        {% endwith %}
+
+        <div class="timer" id="timer">Time: 0s</div>
+
+        {% for question in questions %}
+        <div class="question" id="question-{{ loop.index }}">
+            <p class="question-text">{{ question['Question'] }}</p>
+            
+            <div class="options">
+                <div class="option">
+                    <input type="radio" name="answer-{{ loop.index }}" value="{{ question['A'] }}" id="choice-{{ loop.index }}-A">
+                    <label for="choice-{{ loop.index }}-A">{{ question['A'] }}</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="answer-{{ loop.index }}" value="{{ question['B'] }}" id="choice-{{ loop.index }}-B">
+                    <label for="choice-{{ loop.index }}-B">{{ question['B'] }}</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="answer-{{ loop.index }}" value="{{ question['C'] }}" id="choice-{{ loop.index }}-C">
+                    <label for="choice-{{ loop.index }}-C">{{ question['C'] }}</label>
+                </div>
+                <div class="option">
+                    <input type="radio" name="answer-{{ loop.index }}" value="{{ question['D'] }}" id="choice-{{ loop.index }}-D">
+                    <label for="choice-{{ loop.index }}-D">{{ question['D'] }}</label>
+                </div>
+            </div>
+
+            {% if loop.last %}
+                <button type="button" onclick="submitQuiz()">Submit Quiz</button>
+            {% else %}
+                <button type="button" onclick="nextQuestion({{loop.index}})">Next Question</button>
+            {% endif %}
+            
+        </div>
+        {% endfor %}
+    </div>
+
+    <script>
+      let currentQuestionIndex = 0;
+      const questions = document.querySelectorAll('.question');
+      
+      // Show the first question
+      if (questions.length > 0) {
+          questions[currentQuestionIndex].classList.add('active');
+      }
+
+      // Timer variables
+      let timer = 0; // in seconds
+      let timerInterval;
+
+      function startTimer() {
+          timerInterval = setInterval(() => {
+              timer++;
+              document.getElementById('timer').innerText = `Time: ${timer}s`;
+          }, 1000);
+      }
+
+      function nextQuestion(index) {
+          const selectedAnswer = document.querySelector(`input[name="answer-${index}"]:checked`);
+          
+          if (!selectedAnswer) {
+              alert("Please select an answer before proceeding.");
+              return;
+          }
+
+          console.log(`Question ${index} answered with: ${selectedAnswer.value}`);
+
+          // Hide current question
+          questions[currentQuestionIndex].classList.remove('active');
+
+          // Move to the next question
+          currentQuestionIndex++;
+          
+          if (currentQuestionIndex < questions.length) {
+              questions[currentQuestionIndex].classList.add('active');
+              
+              // Reset timer for the next question if needed
+              timer = 0; // Reset timer for the next question
+              document.getElementById('timer').innerText = `Time: ${timer}s`;
+              
+              // Restart timer if needed (optional)
+              clearInterval(timerInterval);
+              startTimer();
+              
+          } else {
+              clearInterval(timerInterval); // Stop the timer when quiz is complete
+              alert(`Quiz completed! Your total time was ${timer} seconds.`);
+              
+              // Optionally show score and ask for explanations
+              showScoreAndExplanations();
+              
+              // You could also redirect or show results here
+              // window.location.href = '/results'; // Example redirect
+          }
+      }
+
+      function submitQuiz() {
+          clearInterval(timerInterval); // Stop the timer when submitting
+
+          // Gather data for submission
+          const userAnswers = [];
+          const correctAnswers = []; // Populate this correctly from your data source
+          const levels = []; // Assuming you have levels stored somewhere
+          const timeSpentList = []; // Initialize time spent list
+
+          questions.forEach((question, index) => {
+              const selectedAnswer = document.querySelector(`input[name="answer-${index + 1}"]:checked`);
+              userAnswers.push(selectedAnswer ? selectedAnswer.value : null);
+              correctAnswers.push(correctAnswers[index]); // Ensure this is populated correctly before submission
+              levels.push(question.dataset.level); // Assuming you have a data attribute for level
+
+              // Here, you should calculate or retrieve the time spent on each question.
+              const timeSpent = "00:" + String(Math.floor(timer % 60)).padStart(2, '0'); // Example of getting time spent in MM:ss format
+              timeSpentList.push(timeSpent); // Add time spent to the list
+          });
+
+          // Send data to server via POST request
+          fetch('/student/submit_quiz', { // Ensure this matches your Flask route
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                  user_answers: userAnswers,
+                  correct_answers: correctAnswers,
+                  levels:levels,
+                  time_spent_list: timeSpentList, // Use correctly populated list here
+                  test_name: "TEST_01", // Replace with actual test name if needed
+                  subject: "Biology", // Replace with actual subject name if needed
+                  total_questions: questions.length,
+              }),
+          })
+          .then(response => response.json())
+          .then(data => {
+              alert(data.message); // Show success message from server response
+              window.location.href = 'student_dashboard.html'; // Redirect after submission
+          })
+          
+      }
+
+      startTimer(); // Start the timer when the page loads
+
+    </script>
+</body>
+</html>

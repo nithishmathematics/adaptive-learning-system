@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Topics</title>
+</head>
+<body>
+    <h1>Select a Topic</h1>
+    <form action="/quiz" method="POST">
+        <label for="topic">Choose a topic:</label>
+        <select name="topic" id="topic">
+            {% for topic in topics %}
+                <option value="{{ topic }}">{{ topic }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Start Quiz</button>
+    </form>
+</body>
+</html>

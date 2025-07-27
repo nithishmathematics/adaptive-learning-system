@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Check My Ability</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-image: url('https://wallpapercave.com/wp/wp9764081.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .container {
+            width: 90%;
+            max-width: 1300px;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+        }
+        .section {
+            display: flex;
+            justify-content: space-between;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        .dropdown-group {
+            flex: 1;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            position: relative;
+            background-size: cover;
+        }
+        select {
+            width: 85%;
+            padding: 15px;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+            z-index: 2;
+        }
+        .start-btn {
+            width: 80%;
+            padding: 20px;
+            font-size: 1.5rem;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .start-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Start Learning</h1>
+        <div class="section">
+            <div class="dropdown-group" style="background-image:url('https://t3.ftcdn.net/jpg/04/11/66/58/360_F_411665826_NiC2HAz25yNOzXPseWn1UK1YlepQy2dB.jpg');">
+                <label>Physics</label>
+                <select id="chapter-physics" onchange="loadTopics('Physics')">
+                    <option>Select Chapter</option>
+                </select>
+                <select id="topic-physics">
+                    <option>Select Topic</option>
+                </select>
+            </div>
+            <div class="dropdown-group" style="background-image:url('https://images.alphacoders.com/109/thumb-1920-1093551.jpg');">
+                <label>Chemistry</label>
+                <select id="chapter-chemistry" onchange="loadTopics('Chemistry')">
+                    <option>Select Chapter</option>
+                </select>
+                <select id="topic-chemistry">
+                    <option>Select Topic</option>
+                </select>
+            </div>
+            <div class="dropdown-group" style="background-image:url('https://wallup.net/wp-content/uploads/2016/07/21/321029-monochrome-Blackboard-knowledge-mathematics-graph-numbers-science-equation-formula-simple_background.jpg');">
+                <label>Mathematics</label>
+                <select id="chapter-mathematics" onchange="loadTopics('Mathematics')">
+                    <option>Select Chapter</option>
+                </select>
+                <select id="topic-mathematics">
+                    <option>Select Topic</option>
+                </select>
+            </div>
+            <div class="dropdown-group" style="background-image:url('https://cdn.sanity.io/images/0vv8moc6/pharmtech/aa51ed965b82ab9a39a458d8c801f7098d8281d5-1280x720.jpg');">
+                <label>Biology</label>
+                <select id="chapter-biology" onchange="loadTopics('Biology')">
+                    <option>Select Chapter</option>
+                </select>
+                <select id="topic-biology">
+                    <option>Select Topic</option>
+                </select>
+            </div>
+        </div>
+        <button class="start-btn" onclick="startLearning()">Start Learning</button>
+    </div>
+    <script>
+        function loadChapters(subject) {
+            fetch(`student/api/chapters/${subject}`)
+
+                .then(response => response.json())
+                .then(data => {
+                    const chapterDropdown = document.getElementById(`chapter-${subject.toLowerCase()}`);
+                    chapterDropdown.innerHTML = '<option>Select Chapter</option>';
+                    data.forEach(chapter => {
+                        const option = document.createElement('option');
+                        option.value = chapter;
+                        option.textContent = chapter;
+                        chapterDropdown.appendChild(option);
+                    });
+                })
+                .catch(error => console.error('Error fetching chapters:', error));
+        }
+
+        function loadTopics(subject) {
+            const chapterDropdown = document.getElementById(`chapter-${subject.toLowerCase()}`);
+            const topicDropdown = document.getElementById(`topic-${subject.toLowerCase()}`);
+            const chapter = chapterDropdown.value;
+
+            if (chapter !== 'Select Chapter') {
+                fetch(`/api/topics/${subject}/${chapter}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        topicDropdown.innerHTML = '<option>Select Topic</option>';
+                        data.forEach(topic => {
+                            const option = document.createElement('option');
+                            option.value = topic;
+                            option.textContent = topic;
+                            topicDropdown.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching topics:', error));
+            } else {
+                topicDropdown.innerHTML = '<option>Select Topic</option>';
+            }
+        }
+
+        function startLearning() {
+            const selectedTopicElements = document.querySelectorAll("select[id^='topic-']");
+            let selectedTopic;
+
+            selectedTopicElements.forEach(element => {
+                if (element.value !== 'Select Topic') {
+                    selectedTopic = element.value;
+                }
+            });
+
+            if (selectedTopic) {
+                window.location.href = `/quiz/${selectedTopic}`;
+            } else {
+                alert("Please select a topic.");
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            ['Physics', 'Chemistry', 'Mathematics', 'Biology'].forEach(loadChapters);
+        });
+    </script>
+</body>
+</html>

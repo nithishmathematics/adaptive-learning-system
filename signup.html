@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #d0e3ff;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .signup-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .signup-box {
+            display: flex;
+            flex-direction: row;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            max-width: 900px;
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .left-side {
+            background-color: #2e57ff;
+            padding: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            width: 50%;
+        }
+
+        .left-side img {
+            max-width: 100%;
+        }
+
+        .right-side {
+            padding: 40px;
+            width: 50%;
+        }
+
+        .right-side h2 {
+            font-weight: bold;
+            color: #2e57ff;
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            border-radius: 30px;
+            padding: 10px 20px;
+        }
+
+        .btn-primary {
+            background-color: #2e57ff;
+            border-radius: 30px;
+            padding: 10px 20px;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: #1d3fcf;
+        }
+
+        .text-center a {
+            color: #2e57ff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-box">
+            <div class="left-side">
+                <img src="https://img.lovepik.com/photo/45009/7675.jpg_wh860.jpg" alt="Illustration">
+            </div>
+            <div class="right-side">
+                <h2 class="text-center">Sign Up</h2>
+                <form method="POST" action="/signup">
+                    <div class="form-group">
+                        <label for="username">Username:</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter username" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password:</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="role">Role:</label>
+                        <select class="form-control" id="role" name="role" required>
+                            <option value="student">Student</option>
+                            <option value="teacher">Teacher</option>
+                            <option value="hod">HOD</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Sign Up</button>
+                </form>
+                <p class="text-center mt-3">Already have an account? <a href="/">Login here</a></p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

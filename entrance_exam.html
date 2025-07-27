@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrance Exam Dashboard</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background-image: url('https://i.pinimg.com/564x/4c/d6/49/4cd64904608bbc192a6796bede2fe27a.jpg'); /* Replace with a suitable image URL */
+      background-size: cover;
+      background-position: center;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+    }
+    .exam-container {
+      display: flex;
+      margin-bottom: 20px;
+      background-color: rgba(255, 255, 255, 0.9);
+      padding: 15px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+    .exam-info {
+      display: flex;
+      align-items: center;
+    }
+    .exam-name {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      padding: 10px;
+      border-radius: 50%;
+      background-color: #007bff;
+      color: #fff;
+      width: 80px;
+      height: 80px;
+      line-height: 60px;
+      margin-right: 20px;
+    }
+    .subjects {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      width: 100%;
+      margin-left: 20px;
+      gap: 10px;
+    }
+    .subject {
+      padding: 10px;
+      border: 1px solid #ccc;
+      text-align: center;
+      border-radius: 5px;
+      background-color: #e9ecef;
+      font-weight: bold;
+      font-size: 18px;
+      width: 100px;
+    }
+    .chart-container {
+      width: 300px;
+      margin-left: 20px;
+    }
+    .chart-title {
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+      margin-bottom: 10px;
+      color: #007bff;
+    }
+    .chart {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: end;
+      gap: 5px;
+      background-color: #f9f9f9;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+    }
+    .chart-bar {
+      background-color: #28a745;
+      width: 50px;
+      transition: height 0.3s;
+      border-radius: 5px 5px 0 0;
+    }
+    .chart-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: bold;
+      margin-top: 5px;
+      color: #333;
+    }
+    .chart-value {
+      text-align: center;
+      font-size: 10px;
+      color: #555;
+      margin-bottom: 2px;
+    }
+    .button-container {
+      margin-top: 20px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background-color: #28a745;
+      color: white;
+    }
+    button.remove {
+      background-color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+  <h1>Entrance Exam Dashboard</h1>
+  
+  <div id="exam-list"></div>
+
+  <div class="button-container">
+    <button onclick="addExam('CET')">Add CET</button>
+    <button onclick="addExam('JEE')">Add JEE</button>
+    <button onclick="addExam('NEET')">Add NEET</button>
+  </div>
+
+  <script>
+    let examCount = 0;
+
+    function addExam(examName) {
+      examCount++;
+      const subjects = getSubjectsForExam(examName);
+      const examList = document.getElementById('exam-list');
+      const examContainer = document.createElement('div');
+      examContainer.className = 'exam-container';
+      examContainer.id = `exam-${examCount}`;
+
+      examContainer.innerHTML = `
+        <div class="exam-info">
+          <div class="exam-name">${examName}</div>
+          <div class="subjects">
+            ${subjects.map(subject => `<div class="subject">${subject.name}</div>`).join('')}
+          </div>
+          <button class="remove" onclick="removeExam(${examCount})">Remove</button>
+        </div>
+        <div class="chart-container">
+          <div class="chart-title">Progress of ${examName}</div>
+          <div class="chart">
+            ${subjects.map(subject => `
+              <div>
+                <div class="chart-value">${subject.completion}%</div>
+                <div class="chart-bar" style="height: ${subject.completion * 2}px;"></div>
+                <div class="chart-label">${subject.name}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      examList.appendChild(examContainer);
+    }
+
+    function getSubjectsForExam(examName) {
+      // Define subjects with completion percentages
+      if (examName === 'CET') return [
+        { name: 'Chemistry', completion: 75 },
+        { name: 'Biology', completion: 60 },
+        { name: 'Maths', completion: 80 },
+        { name: 'Physics', completion: 90 }
+      ];
+      if (examName === 'JEE') return [
+        { name: 'Chemistry', completion: 70 },
+        { name: 'Maths', completion: 85 },
+        { name: 'Physics', completion: 65 }
+      ];
+      if (examName === 'NEET') return [
+        { name: 'Biology', completion: 80 },
+        { name: 'Chemistry', completion: 75 },
+        { name: 'Physics', completion: 70 }
+      ];
+      return [];
+    }
+
+    function removeExam(id) {
+      const examContainer = document.getElementById(`exam-${id}`);
+      if (examContainer) {
+        examContainer.remove();
+      }
+    }
+  </script>
+</body>
+</html>
